@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  api:
+    image: ${DOCKER_REGISTRY-}api
+    container_name: divingshop.api
+    build:
+      context: .
+      dockerfile: Api/Dockerfile
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+
+  database:
+    image: postgres:latest
+    container_name: divingshop.database
+    environment:
+      - POSTGRES_DB=divingshop
+      - POSTGRES_USER=divingshop
+      - POSTGRES_PASSWORD=divingshop
+    volumes:
+      - ./.containers/products-db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  runtrackr-redis:
+    image: redis:latest
+    container_name: runtrackr.redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  runtrackr-blob-storage:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: runtrackr.blob-storage
+    volumes:
+      - ./containers/blob_storage/data:/data
+    ports:
+      - "10000:10000"
+    command: "azurite-blob --blobHost 0.0.0.0 -l /data"
