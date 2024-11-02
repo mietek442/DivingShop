@@ -3,20 +3,39 @@ using Api.Infrastructure.DbContext;
 using Api.Infrastructure.Storage;
 using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
+// dodanie mediatora (Adding mediator)
+builder.Services.AddMediatR(cfg => {
+    cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
+
+
+});
+// Dodaj us³ugi do kontenera (Add services to the container)
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Dowiedz siê wiêcej o konfiguracji Swagger/OpenAPI na https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+option.SupportNonNullableReferenceTypes();
+option.SwaggerDoc("v1", new OpenApiInfo { Title = "Diving Shop Api", Version = "v1" });
+
+
+    //zezwolenie na annotations czyli SwaggerOperation gdzie ustawiamy np. Tags (grupujemy endpointy po tym)
+    option.EnableAnnotations();
+
+
+});
 builder.Services.AddDbContext<ApplicationContext>(
     options => options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 builder.Services.AddScoped<IApplicationContext, ApplicationContext>();
 
-//blob service for azuere
+// blob service dla Azure (blob service for Azure)
 builder.Services.AddSingleton<IBlobService, BlobService>();
 builder.Services.AddSingleton(x =>
     new BlobServiceClient(builder.Configuration.GetConnectionString("BlobStorage")));
@@ -25,7 +44,7 @@ builder.Services.AddSingleton(x =>
 var app = builder.Build();
 
 
-// Configure the HTTP request pipeline.
+// Konfiguracja potoku ¿¹dañ HTTP (Configure the HTTP request pipeline)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

@@ -7,15 +7,15 @@ namespace Api.Infrastructure.Storage
 {
     internal sealed class BlobService(BlobServiceClient blobServiceClient) : IBlobService
     {
-        
+
         public async Task DeleteAsync(Guid fileId, CancellationToken cancellationToken = default)
         {
 
             var containerClient = blobServiceClient.GetBlobContainerClient("files");
-            
+
             BlobClient blobClient = containerClient.GetBlobClient(fileId.ToString());
 
-            await blobClient.DeleteIfExistsAsync(cancellationToken:cancellationToken);
+            await blobClient.DeleteIfExistsAsync(cancellationToken: cancellationToken);
 
         }
 
@@ -30,7 +30,7 @@ namespace Api.Infrastructure.Storage
 
             return new FileRespone(response.Value.Content.ToStream(), response.Value.Details.ContentType);
         }
-    
+
 
         public async Task<Guid> UploadAsync(Stream stream, string contentType, CancellationToken cancellationToken = default)
         {
@@ -40,7 +40,7 @@ namespace Api.Infrastructure.Storage
 
             BlobClient blobClient = containerClient.GetBlobClient(fieldId.ToString());
 
-            await blobClient.UploadAsync(stream, new BlobHttpHeaders{ContentType = contentType }, cancellationToken: cancellationToken);
+            await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType }, cancellationToken: cancellationToken);
             return fieldId;
         }
     }

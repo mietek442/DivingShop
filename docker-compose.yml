@@ -10,6 +10,7 @@ services:
     ports:
       - "5000:5000"
       - "5001:5001"
+    command: ["dotnet", "watch", "--project", "Api", "run"]
 
   database:
     image: postgres:latest
