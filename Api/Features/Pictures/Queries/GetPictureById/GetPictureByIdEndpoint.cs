@@ -15,7 +15,7 @@ namespace Api.Features.Pictures.Queries.GetPictureById
             _mediator = mediator;
         }
 
-        [HttpGet("api/cars/{id}")]
+        [HttpGet("api/files/{id}")]
         [SwaggerOperation(
             Summary = "Get Pictures By Id",
             Description = "Get Pictures By Id",

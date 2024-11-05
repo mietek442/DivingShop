@@ -7,7 +7,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddScoped<IApplicationContext, ApplicationContext>();
 
 // dodanie mediatora (Adding mediator)
 builder.Services.AddMediatR(cfg => {
@@ -31,9 +31,11 @@ option.SwaggerDoc("v1", new OpenApiInfo { Title = "Diving Shop Api", Version = "
 
 
 });
-builder.Services.AddDbContext<ApplicationContext>(
-    options => options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
-builder.Services.AddScoped<IApplicationContext, ApplicationContext>();
+builder.Services.AddDbContext<ApplicationContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
 
 // blob service dla Azure (blob service for Azure)
 builder.Services.AddSingleton<IBlobService, BlobService>();
