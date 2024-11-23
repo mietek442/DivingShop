@@ -1,14 +1,12 @@
 ﻿using Api.Domain.Models;
 using Api.Features.Common.Services.UrlHelper;
-using Microsoft.AspNetCore.Mvc.Routing;
 
-namespace Api.Features.Products.Queries.GetAllProducts
+namespace Api.Features.Products.Queries.GetByIdProduct
 {
-    public  static class GetAllProductsMapper
+    public static class GetByIdProductMapper
     {
-        public static ProductResult ToProductResutl(this Product product, IUrlHelpers _urlHelpers)
+        public static ProductResult ToProductResult(this Product product, IUrlHelpers urlHelpers)
         {
-
             return new ProductResult
             {
                 Title = product.Title,
@@ -16,13 +14,18 @@ namespace Api.Features.Products.Queries.GetAllProducts
                 Description = product.Description,
                 Manufacture = product.Manufacture,
                 Available = product.Available,
-                BasePrice = (product.Discount> 0) ? product.BasePrice : null,
+                BasePrice = (product.Discount > 0) ? product.BasePrice : null,
                 Discount = (product.Discount > 0) ? product.Discount : null,
                 FinalPrice = CalculateFinalPrice(product),
-                ImgUrl = CreatePictureUrl(product.ImgId, _urlHelpers),
+                ImgUrl = CreatePictureUrl(product.ImgId, urlHelpers),
+                ImgTwo = CreatePictureUrl(product.ImgIdTwo, urlHelpers),
+                ImgThree = CreatePictureUrl(product.ImgIdThree, urlHelpers),
+                ImgFour = CreatePictureUrl(product.ImgIdFour, urlHelpers),
+                Size = product.Size,
+                ProductParams = product.ProductParams
             };
-
         }
+
         private static float CalculateFinalPrice(Product product)
         {
             if (product.Discount == 0)
@@ -33,18 +36,19 @@ namespace Api.Features.Products.Queries.GetAllProducts
             {
                 return product.BasePrice - (product.BasePrice * (product.Discount ?? 0));
             }
-            
+
             return product.BasePrice;
         }
-        private static string CreatePictureUrl(Guid? imgId, IUrlHelpers _urlHelpers)
+
+        private static string CreatePictureUrl(Guid? imgId, IUrlHelpers urlHelpers)
         {
 
-            if (_urlHelpers == null)
+            if (urlHelpers == null)
                 throw new InvalidOperationException("UrlHelper is not set.");
 
 
 
-            var url = _urlHelpers.CreatePictureUrl(imgId);
+            var url = urlHelpers.CreatePictureUrl(imgId);
             if (url == null)
             {
                 return "Unable to generate the URL.";
@@ -53,5 +57,5 @@ namespace Api.Features.Products.Queries.GetAllProducts
 
             return string.IsNullOrEmpty(url) ? "Unable to generate the URL." : url;
         }
-
+    }
 }
