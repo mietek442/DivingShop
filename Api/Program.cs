@@ -9,7 +9,17 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyMethod()
+              .AllowAnyHeader()
+              .WithMethods("GET")
+              .WithOrigins("http://localhost:8804")
+              .AllowCredentials();
+    });
+});
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddMediatR(cfg => {
@@ -43,7 +53,7 @@ builder.Services.AddSingleton(x =>
 builder.Services.AddSingleton<IUrlHelpers, UrlHelpers>();
 
 var app = builder.Build();
-
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {
