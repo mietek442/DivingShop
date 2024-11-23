@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,7 +62,7 @@ namespace Api.Migrations
                     Description = table.Column<string>(type: "text", nullable: false),
                     Manufacture = table.Column<string>(type: "text", nullable: false),
                     Available = table.Column<bool>(type: "boolean", nullable: false),
-                    BasePrice = table.Column<float>(type: "real", nullable: true),
+                    BasePrice = table.Column<float>(type: "real", nullable: false),
                     Discount = table.Column<float>(type: "real", nullable: true),
                     ImgId = table.Column<Guid>(type: "uuid", nullable: true),
                     ImgIdTwo = table.Column<Guid>(type: "uuid", nullable: true),

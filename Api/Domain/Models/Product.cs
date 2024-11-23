@@ -9,7 +9,7 @@
         public required string Description { get; set; }
         public string Manufacture { get; set; }
         public bool Available { get; set; }
-        public float? BasePrice { get; set; }
+        public float BasePrice { get; set; }
         public float? Discount { get; set; }
         public Guid? ImgId { get; set; }
         public Guid? ImgIdTwo { get; set; }

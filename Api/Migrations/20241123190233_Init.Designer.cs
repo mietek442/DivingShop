@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20241105202343_init")]
-    partial class init
+    [Migration("20241123190233_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,7 @@ namespace Api.Migrations
                     b.Property<bool>("Available")
                         .HasColumnType("boolean");
 
-                    b.Property<float?>("BasePrice")
+                    b.Property<float>("BasePrice")
                         .HasColumnType("real");
 
                     b.Property<DateTime>("CreatedAt")

@@ -12,17 +12,23 @@ services:
       - "5001:5001"
     command: ["dotnet", "watch", "--project", "Api", "run"]
 
-  database:
+  divingshop.database:
     image: postgres:latest
     container_name: divingshop.database
     environment:
       - POSTGRES_DB=divingshop
       - POSTGRES_USER=divingshop
       - POSTGRES_PASSWORD=divingshop
-    volumes:
-      - ./.containers/products-db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    volumes:
+      - divingshop_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "divingshop"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
 
   runtrackr-redis:
     image: redis:latest
@@ -39,3 +45,6 @@ services:
     ports:
       - "10000:10000"
     command: "azurite-blob --blobHost 0.0.0.0 -l /data"
+
+volumes:
+  divingshop_data:

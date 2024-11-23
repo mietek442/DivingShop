@@ -33,7 +33,7 @@ namespace Api.Migrations
                     b.Property<bool>("Available")
                         .HasColumnType("boolean");
 
-                    b.Property<float?>("BasePrice")
+                    b.Property<float>("BasePrice")
                         .HasColumnType("real");
 
                     b.Property<DateTime>("CreatedAt")
