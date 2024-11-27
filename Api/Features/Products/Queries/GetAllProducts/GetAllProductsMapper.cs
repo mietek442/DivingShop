@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Api.Features.Products.Queries.GetAllProducts
 {
-    public  static class GetAllProductsMapper
+    public static class GetAllProductsMapper
     {
         public static ProductResult ToProductResutl(this Product product, IUrlHelpers _urlHelpers)
         {
@@ -16,7 +16,7 @@ namespace Api.Features.Products.Queries.GetAllProducts
                 Description = product.Description,
                 Manufacture = product.Manufacture,
                 Available = product.Available,
-                BasePrice = (product.Discount> 0) ? product.BasePrice : null,
+                BasePrice = (product.Discount > 0) ? product.BasePrice : null,
                 Discount = (product.Discount > 0) ? product.Discount : null,
                 FinalPrice = CalculateFinalPrice(product),
                 ImgUrl = CreatePictureUrl(product.ImgId, _urlHelpers),
@@ -33,25 +33,26 @@ namespace Api.Features.Products.Queries.GetAllProducts
             {
                 return product.BasePrice - (product.BasePrice * (product.Discount ?? 0));
             }
-            
+
             return product.BasePrice;
         }
         private static string CreatePictureUrl(Guid? imgId, IUrlHelpers _urlHelpers)
         {
 
-            if (2 == null)
+            if (_urlHelpers == null)
                 throw new InvalidOperationException("UrlHelper is not set.");
 
-            
+
 
             var url = _urlHelpers.CreatePictureUrl(imgId);
-            if (url == null) {
+            if (url == null)
+            {
                 return "Unable to generate the URL.";
             }
 
 
             return string.IsNullOrEmpty(url) ? "Unable to generate the URL." : url;
         }
-    }
 
+    }
 }
