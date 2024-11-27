@@ -22,7 +22,7 @@ namespace Api.Features.Products.Commands.DeleteProduct
 
         public async Task<ActionResult> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            var product = await _context.Products.FindAsync(new object[] { request.ProductId }, cancellationToken);
+            var product = await _context.Products.FindAsync(request.ProductId, cancellationToken);
             if (product == null)
             {
                 return new NotFoundResult();
