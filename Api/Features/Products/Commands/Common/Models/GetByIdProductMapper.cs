@@ -1,8 +1,7 @@
 ﻿using Api.Domain.Models;
 using Api.Features.Common.Services.UrlHelper;
-using Api.Features.Products.Commands.Common.Models;
 
-namespace Api.Features.Products.Queries.GetByIdProduct
+namespace Api.Features.Products.Commands.Common.Models
 {
     public static class GetByIdProductMapper
     {

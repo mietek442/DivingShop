@@ -1,6 +1,5 @@
 ﻿using Api.Features.Common.Services.UrlHelper;
 using Api.Features.Products.Commands.Common.Models;
-using Api.Features.Products.Queries.GetByIdProduct;
 using Api.Infrastructure.DbContext;
 using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
@@ -31,17 +30,15 @@ namespace Api.Features.Products.Commands.UpdateProduct
             {
                 return new NotFoundResult();
             }
+            //Mapowanie rzeczy z request do produktu np. product.title = request.UpdateProductModelRequest.title
             UpdateProductMapper.MapToProduct(product, request.UpdateProductModelRequest);
-           
+
+            
             await _context.SaveChangesAsync(cancellationToken);
 
-            var result =  await _mediator.Send(new GetProductByIdQuery { Id = request.Id }, cancellationToken);
 
-            if(result is null)
-            {
-                return new NotFoundResult();
-            }
-            return result;
+            //zwracanie Product By ID Result
+            return product.ToProductResult(_urlHelpers);
 
         }
     }
