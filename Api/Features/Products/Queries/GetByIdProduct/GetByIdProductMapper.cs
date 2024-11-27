@@ -1,21 +1,22 @@
 ﻿using Api.Domain.Models;
 using Api.Features.Common.Services.UrlHelper;
+using Api.Features.Products.Commands.Common.Models;
 
 namespace Api.Features.Products.Queries.GetByIdProduct
 {
     public static class GetByIdProductMapper
     {
-        public static ProductResult ToProductResult(this Product product, IUrlHelpers urlHelpers)
+        public static ProductByIdResult ToProductResult(this Product product, IUrlHelpers urlHelpers)
         {
-            return new ProductResult
+            return new ProductByIdResult
             {
                 Title = product.Title,
                 ShortDesc = product.ShortDesc,
                 Description = product.Description,
                 Manufacture = product.Manufacture,
                 Available = product.Available,
-                BasePrice = (product.Discount > 0) ? product.BasePrice : null,
-                Discount = (product.Discount > 0) ? product.Discount : null,
+                BasePrice = product.Discount > 0 ? product.BasePrice : null,
+                Discount = product.Discount > 0 ? product.Discount : null,
                 FinalPrice = CalculateFinalPrice(product),
                 ImgUrl = CreatePictureUrl(product.ImgId, urlHelpers),
                 ImgTwo = CreatePictureUrl(product.ImgIdTwo, urlHelpers),
@@ -34,7 +35,7 @@ namespace Api.Features.Products.Queries.GetByIdProduct
             }
             if (product.Discount > 0)
             {
-                return product.BasePrice - (product.BasePrice * (product.Discount ?? 0));
+                return product.BasePrice - product.BasePrice * (product.Discount ?? 0);
             }
 
             return product.BasePrice;

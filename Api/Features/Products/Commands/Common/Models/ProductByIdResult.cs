@@ -1,9 +1,10 @@
 ﻿using Api.Domain.Models;
 
-namespace Api.Features.Products.Queries.GetByIdProduct
+namespace Api.Features.Products.Commands.Common.Models
 {
-    public class ProductResult
+    public class ProductByIdResult
     {
+
         public required string Title { get; set; }
         public string ShortDesc { get; set; }
         public string? Description { get; set; }
@@ -19,5 +20,6 @@ namespace Api.Features.Products.Queries.GetByIdProduct
         public string ImgFour { get; set; }
         public float? Size { get; set; }
         public ICollection<ProductParam>? ProductParams { get; set; }
+
     }
 }
