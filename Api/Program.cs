@@ -6,6 +6,7 @@ using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,13 @@ builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(option =>
+{
+
+    option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+}
+);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
