@@ -1,4 +1,5 @@
-﻿using Api.Features.Common.Services.Storage;
+﻿using Api;
+using Api.Features.Common.Services.Storage;
 using Api.Features.Common.Services.UrlHelper;
 using Api.Infrastructure.DbContext;
 using Api.Infrastructure.Storage;
@@ -21,11 +22,16 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
+builder.Services.AddApplication();
+// to jest od dodania migracji do bazy(tak to działa że musi być asynchronicznie to 
+Task.Run(async () => await builder.Services.AddInfrastructureAsync(builder.Configuration)).Wait();
+
+
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-builder.Services.AddMediatR(cfg => {
-    cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
-});
+
 
 builder.Services.AddControllers().AddJsonOptions(option =>
 {
@@ -45,12 +51,12 @@ builder.Services.AddSwaggerGen(option =>
     option.EnableAnnotations();
 });
 
-builder.Services.AddDbContext<ApplicationContext>(options =>
+/*builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+});*/
 
-builder.Services.AddScoped<IApplicationContext, ApplicationContext>();
+//builder.Services.AddScoped<IApplicationContext, ApplicationContext>();
 
 
 builder.Services.AddSingleton<IBlobService, BlobService>();
@@ -67,6 +73,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+await app.Services.ApplyMigrationsAsync();
+
+
 
 app.UseHttpsRedirection();
 

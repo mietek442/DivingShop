@@ -8,9 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Api.Features.Products.Queries.GetAllProducts
 {
-    
-
-    public class GetAllProductEndpoint : EndpointBaseAsync.WithRequest<GetProductsPaginateQuery>.WithResult<ActionResult<List<ProductResult>>>
+    public class GetAllProductEndpoint : EndpointBaseAsync.WithoutRequest.WithResult<ActionResult<List<ProductResult>>>
     {
         private readonly IMediator _mediator;
 
@@ -26,10 +24,10 @@ namespace Api.Features.Products.Queries.GetAllProducts
             OperationId = "Products_GetAll",
             Tags = new[] { "Products" })
         ]
-        public override async Task<ActionResult<List<ProductResult>>> HandleAsync([FromQuery] GetProductsPaginateQuery query, CancellationToken cancellationToken = default)
+        public override async Task<ActionResult<List<ProductResult>>> HandleAsync(CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(query, cancellationToken);
-            return Ok(result);
+
+            return await _mediator.Send(new GetProductsQuery { });
         }
     }
 }
