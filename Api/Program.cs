@@ -1,55 +1,82 @@
+ï»¿using Api;
 using Api.Features.Common.Services.Storage;
+using Api.Features.Common.Services.UrlHelper;
 using Api.Infrastructure.DbContext;
 using Api.Infrastructure.Storage;
 using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-// dodanie mediatora (Adding mediator)
-builder.Services.AddMediatR(cfg => {
-    cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
-
-
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyMethod()
+              .AllowAnyHeader()
+              .WithMethods("GET")
+              .WithOrigins("http://localhost:8804")
+              .AllowCredentials();
+    });
 });
-// Dodaj us³ugi do kontenera (Add services to the container)
 
-builder.Services.AddControllers();
-// Dowiedz siê wiêcej o konfiguracji Swagger/OpenAPI na https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddApplication();
+// to jest od dodania migracji do bazy(tak to dziaÅ‚a Å¼e musi byÄ‡ asynchronicznie to 
+Task.Run(async () => await builder.Services.AddInfrastructureAsync(builder.Configuration)).Wait();
+
+
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+
+
+builder.Services.AddControllers().AddJsonOptions(option =>
+{
+
+    option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+}
+);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
-option.SupportNonNullableReferenceTypes();
-option.SwaggerDoc("v1", new OpenApiInfo { Title = "Diving Shop Api", Version = "v1" });
+    option.SupportNonNullableReferenceTypes();
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Diving Shop Api", Version = "v1" });
 
 
-    //zezwolenie na annotations czyli SwaggerOperation gdzie ustawiamy np. Tags (grupujemy endpointy po tym)
     option.EnableAnnotations();
-
-
 });
-builder.Services.AddDbContext<ApplicationContext>(
-    options => options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
-builder.Services.AddScoped<IApplicationContext, ApplicationContext>();
 
-// blob service dla Azure (blob service for Azure)
+/*builder.Services.AddDbContext<ApplicationContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});*/
+
+//builder.Services.AddScoped<IApplicationContext, ApplicationContext>();
+
+
 builder.Services.AddSingleton<IBlobService, BlobService>();
 builder.Services.AddSingleton(x =>
     new BlobServiceClient(builder.Configuration.GetConnectionString("BlobStorage")));
 
+builder.Services.AddSingleton<IUrlHelpers, UrlHelpers>();
 
 var app = builder.Build();
+app.UseCors();
 
-
-// Konfiguracja potoku ¿¹dañ HTTP (Configure the HTTP request pipeline)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+await app.Services.ApplyMigrationsAsync();
+
+
 
 app.UseHttpsRedirection();
 

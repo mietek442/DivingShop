@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Api.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 namespace Api.Infrastructure.DbContext
 {
     public interface IApplicationContext
     {
-        Task<int> SaveChangesAsync();
+        DbSet<Product> Products { get; set; }
+        DbSet<ProductParam> ProductParams { get; set; }
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
