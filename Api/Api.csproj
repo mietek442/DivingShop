@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <Folder Include="Features\Common\Services\NewFolder\" />
+    <Folder Include="Features\Orders\Queries\" />
   </ItemGroup>
 
 </Project>
