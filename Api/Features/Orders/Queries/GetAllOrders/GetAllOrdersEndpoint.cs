@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Api.Features.Orders.Queries.GetAllOrders
 {
 
-    public class GetAllOrdersEndpoint : EndpointBaseAsync.WithoutRequest.WithResult<ActionResult<List<OrderResult>>>
+    public class GetAllOrdersEndpoint : EndpointBaseAsync.WithRequest<OrderQueryOptionsRequest>.WithResult<ActionResult<List<OrderResult>>>
     {
         private readonly IMediator _mediator;
 
@@ -26,10 +26,11 @@ namespace Api.Features.Orders.Queries.GetAllOrders
         ]
 
 
-        public override async Task<ActionResult<List<OrderResult>>> HandleAsync(CancellationToken cancellationToken = default)
-        {
+       
 
-            return await _mediator.Send(new GetOrdersQuery { });
+        public override  async Task<ActionResult<List<OrderResult>>> HandleAsync([FromQuery]  OrderQueryOptionsRequest request, CancellationToken cancellationToken = default)
+        {
+            return await _mediator.Send(new GetOrdersQuery {QueryOptionsObject = request });
         }
     }
 }

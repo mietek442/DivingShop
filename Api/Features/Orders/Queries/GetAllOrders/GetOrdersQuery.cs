@@ -11,6 +11,7 @@ namespace Api.Features.Orders.Queries.GetAllOrders
 {
     public class GetOrdersQuery : IRequest<ActionResult<List<OrderResult>>>
     {
+       public required  OrderQueryOptionsRequest QueryOptionsObject { get; set; }
     }
 
     public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, ActionResult<List<OrderResult>>>
@@ -26,34 +27,38 @@ namespace Api.Features.Orders.Queries.GetAllOrders
 
         public async Task<ActionResult<List<OrderResult>>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
-            var orders = await _context.Orders
-    .Select(o => new OrderDto
-    {
-        Id = o.Id,
-        CreatedAt = o.CreatedAt,
-        Status = o.Status,
-        Items = o.OrderItems.Select(oi => new OrderItemDto
-        {
-            Id = oi.Id,
-            Quantity = oi.Quantity,
-            ProductTitle = oi.Product.Title,
-            ProductShortDesc = oi.Product.ShortDesc,
-            TotalProductsPrice = oi.TotalProductsPrice,
-            ImageId = oi.Product.ImgId,
-        }).ToList()
-    })
-    .ToListAsync(cancellationToken);
+            var pageNumber = request.QueryOptionsObject.PageNumber;
+            var pageSize = request.QueryOptionsObject.PageSize;
+            int skip = (pageNumber - 1) * pageSize;
+
+
+            var ordersQuery = _context.Orders
+           .OrderBy(o => o.CreatedAt)
+           .Select(o => new OrderDto
+           {
+               Id = o.Id,
+               CreatedAt = o.CreatedAt,
+               Status = o.Status,
+               Items = o.OrderItems.Select(oi => new OrderItemDto
+               {
+                   Id = oi.Id,
+                   Quantity = oi.Quantity,
+                   ProductTitle = oi.Product.Title,
+                   ProductShortDesc = oi.Product.ShortDesc,
+                   TotalProductsPrice = oi.TotalProductsPrice,
+                   ImageId = oi.Product.ImgId,
+               }).ToList()
+           });
+
+            var orders = await ordersQuery
+            .Skip(skip)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
 
 
             var mappedOrders = orders.Select(o => o.ToOrderResult(_urlHelpers)).ToList();
 
-            /*
-                        if (orders == null || orders.Count == 0)
-                        {
-                            return new NotFoundResult();
-                        }
-
-                        var orderResponses = orders.Select(order => order.ToOrderResult(_urlHelpers)).ToList(); */
+            
             return new OkObjectResult(orders);
         }
         public class OrderDto

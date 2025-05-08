@@ -19,7 +19,8 @@ namespace Api.Features.Orders.Queries.GetAllOrders
 
                 Status = order.Status,
                 Price = order.Items.Sum(i => i.TotalProductsPrice),
-                OrderItems = order.Items,
+                OrderItems =  order.Items
+  ,
             };
 
         }
