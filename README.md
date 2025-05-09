@@ -1,5 +1,26 @@
 # DivingShop
 
+# Robienie Migracji, Migrations
+
+```docker command
+dotnet ef migrations add "InitialMigration"  --output-dir Infrastructure/Persistence/Migrations
+```
+
+🥴
+-Upewnij się, że zmieniasz connection string z serwerem podczas tworzenia migracji, a po wykonaniu migracji zmień connection string połączenia domyślnego z powrotem.
+
+-Make sure to change the server connection when you make migration string in your, after migrations you change defaultconnection string back `appsettings.json` file from:
+
+```json
+"DefaultConnection": "Server=restauracja.database;Database=restauracja;User Id=restauracja;Password=restauracja;"
+```
+
+to:
+
+```json
+"DefaultConnection": "Server=localhost;Database=restauracja;User Id=restauracja;Password=restauracja;"
+```
+
 DivingShop to projekt API sklepu internetowego stworzonego w technologii .NET, zaprojektowany dla pasjonatów nurkowania. Aplikacja korzysta z Entity Framework do zarządzania bazą danych oraz z implementacji systemu uwierzytelniania (Entity Framework Authentication), który obsługuje logowanie i rejestrację użytkowników.
 
 ## Funkcje projektu
@@ -18,3 +39,4 @@ Projekt stanowi solidną bazę dla e-commerce w branży nurkowej, zapewniając w
 
 
 DivingShop oferuje nowoczesne i bezpieczne rozwiązanie dla miłośników nurkowania, umożliwiając im łatwe zakupy online.
+
