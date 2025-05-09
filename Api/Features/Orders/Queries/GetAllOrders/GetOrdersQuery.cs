@@ -1,17 +1,20 @@
-﻿using Api.Features.Common.Services.UrlHelper;
+﻿using Api.Domain.Models;
+using Api.Features.Common.Services.UrlHelper;
+using Api.Features.Products.Queries.GetProducts;
 using Api.Infrastructure.DbContext;
 using Api.Shared.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Linq.Expressions;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Api.Features.Orders.Queries.GetAllOrders
 {
     public class GetOrdersQuery : IRequest<ActionResult<List<OrderResult>>>
     {
-       public required  OrderQueryOptionsRequest QueryOptionsObject { get; set; }
+        public required OrderQueryOptionsRequest QueryOptionsObject { get; set; }
     }
 
     public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, ActionResult<List<OrderResult>>>
@@ -27,12 +30,16 @@ namespace Api.Features.Orders.Queries.GetAllOrders
 
         public async Task<ActionResult<List<OrderResult>>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
+
+
+
+
             var pageNumber = request.QueryOptionsObject.PageNumber;
             var pageSize = request.QueryOptionsObject.PageSize;
             int skip = (pageNumber - 1) * pageSize;
 
 
-            var ordersQuery = _context.Orders
+            IQueryable<OrderDto> ordersQuery = _context.Orders
            .OrderBy(o => o.CreatedAt)
            .Select(o => new OrderDto
            {
@@ -50,6 +57,15 @@ namespace Api.Features.Orders.Queries.GetAllOrders
                }).ToList()
            });
 
+            if (request.QueryOptionsObject.IsDescSort)
+            {
+                ordersQuery = ordersQuery.OrderByDescending(GetSortProperty(request.QueryOptionsObject));
+            }
+            else
+            {
+                ordersQuery = ordersQuery.OrderBy(GetSortProperty(request.QueryOptionsObject));
+            }
+
             var orders = await ordersQuery
             .Skip(skip)
             .Take(pageSize)
@@ -58,9 +74,18 @@ namespace Api.Features.Orders.Queries.GetAllOrders
 
             var mappedOrders = orders.Select(o => o.ToOrderResult(_urlHelpers)).ToList();
 
-            
+
             return new OkObjectResult(orders);
         }
+
+        //sortowanie 
+        private static Expression<Func<OrderDto, object>> GetSortProperty(OrderQueryOptionsRequest request) =>
+     request.SortBy?.ToString().ToLower() switch
+     {
+         "createdate" => order => order.CreatedAt,
+         "status" => order => order.Status,
+         _ => order => order.Id
+     };
         public class OrderDto
         {
             public Guid Id { get; set; }
