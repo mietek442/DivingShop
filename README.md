@@ -1,5 +1,5 @@
 # DivingShop
-
+<a href="https://wakatime.com/badge/user/ceb09352-f08e-4020-bcd8-6ecb02d0d589/project/3d9d15eb-fe24-4f3b-b1da-47044ad39c59"><img src="https://wakatime.com/badge/user/ceb09352-f08e-4020-bcd8-6ecb02d0d589/project/3d9d15eb-fe24-4f3b-b1da-47044ad39c59.svg" alt="wakatime"></a>
 # Robienie Migracji, Migrations
 
 ```docker command
