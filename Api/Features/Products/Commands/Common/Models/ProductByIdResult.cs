@@ -13,11 +13,7 @@ namespace Api.Features.Products.Commands.Common.Models
         public float? BasePrice { get; set; }
         public float? Discount { get; set; }
         public float FinalPrice { get; set; }
-        public string ImgUrl { get; set; }
-
-        public string ImgTwo { get; set; }
-        public string ImgThree { get; set; }
-        public string ImgFour { get; set; }
+        public List<string> ImageUrls { get; set; } = new();
         public float? Size { get; set; }
         public ICollection<ProductParam>? ProductParams { get; set; }
 

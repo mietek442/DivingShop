@@ -10,9 +10,17 @@ namespace Api.Features.Orders.Commands.CreateOrder
             {
                 Id = order.Id,
                 UserId = order.UserId,
+                UserName=order.UserName,
+                UserLastName=order.UserLastName,
+                Address=order.Address,
+                Email=order.Email,
+                PhoneNumber=order.PhoneNumber,
                 OrderItems = orderItems,
                 Status = order.Status.ToString(),
-                Price = orderItems.Sum(i => i.TotalProductsPrice),
+                Price = order.Price,
+                ShipPrice=order.ShipPrice,
+                TotalPrice=order.TotalPrice,
+                TotalPriceIncludeTax =order.TotalPriceIncludeTax
             };
         }
     }

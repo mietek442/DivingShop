@@ -5,6 +5,7 @@ using Api.Infrastructure.DbContext;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Features.Products.Queries.GetByIdProduct
 {
@@ -26,7 +27,9 @@ namespace Api.Features.Products.Queries.GetByIdProduct
 
         public async Task<ActionResult<ProductByIdResult>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
-            var product = await _context.Products.FindAsync(request.Id);
+            var product = await _context.Products
+     .Include(p => p.ProductParams)
+     .FirstOrDefaultAsync(p => p.Id == request.Id);
             if (product == null)
             {
                 return new NotFoundResult();

@@ -17,10 +17,7 @@ namespace Api.Features.Products.Commands.Common.Models
                 BasePrice = product.Discount > 0 ? product.BasePrice : null,
                 Discount = product.Discount > 0 ? product.Discount : null,
                 FinalPrice = CalculateFinalPrice(product),
-                ImgUrl = CreatePictureUrl(product.ImgId, urlHelpers),
-                ImgTwo = CreatePictureUrl(product.ImgIdTwo, urlHelpers),
-                ImgThree = CreatePictureUrl(product.ImgIdThree, urlHelpers),
-                ImgFour = CreatePictureUrl(product.ImgIdFour, urlHelpers),
+                ImageUrls = product.ImageUrls,
                 Size = product.Size,
                 ProductParams = product.ProductParams
             };
@@ -40,22 +37,5 @@ namespace Api.Features.Products.Commands.Common.Models
             return product.BasePrice;
         }
 
-        private static string CreatePictureUrl(Guid? imgId, IUrlHelpers urlHelpers)
-        {
-
-            if (urlHelpers == null)
-                throw new InvalidOperationException("UrlHelper is not set.");
-
-
-
-            var url = urlHelpers.CreatePictureUrl(imgId);
-            if (url == null)
-            {
-                return "Unable to generate the URL.";
-            }
-
-
-            return string.IsNullOrEmpty(url) ? "Unable to generate the URL." : url;
-        }
     }
 }

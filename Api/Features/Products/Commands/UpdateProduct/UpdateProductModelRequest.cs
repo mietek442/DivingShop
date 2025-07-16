@@ -28,7 +28,7 @@ namespace Api.Features.Products.Commands.UpdateProduct
         public Guid? ImgIdTwo { get; set; }
         public Guid? ImgIdThree { get; set; }
         public Guid? ImgIdFour { get; set; }
-
+        public List<string> ImageUrls { get; set; } = new();
         public float? Size { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Api.Domain.Models
 {
@@ -13,6 +14,7 @@ namespace Api.Domain.Models
 
         [ForeignKey("Product")]
         public Guid ProductId { get; set; }
+        [JsonIgnore]
         public Product Product { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

@@ -15,10 +15,7 @@ namespace Api.Features.Products.Commands.UpdateProduct
             product.Available = request.Available;
             product.BasePrice = request.BasePrice;
             product.Discount = request.Discount;
-            product.ImgId = request.ImgId;
-            product.ImgIdTwo = request.ImgIdTwo;
-            product.ImgIdThree = request.ImgIdThree;
-            product.ImgIdFour = request.ImgIdFour;
+            product.ImageUrls = request.ImageUrls;
             product.Size = request.Size;
         }
     }

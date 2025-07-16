@@ -11,14 +11,12 @@
         public bool Available { get; set; }
         public float BasePrice { get; set; }
         public float? Discount { get; set; }
-        public Guid? ImgId { get; set; }
-        public Guid? ImgIdTwo { get; set; }
-        public Guid? ImgIdThree { get; set; }
-        public Guid? ImgIdFour { get; set; }
+
         public float? Size { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<ProductParam> ProductParams { get; set; }
+        public List<string> ImageUrls { get; set; } = new();
     }
 }

@@ -4,6 +4,7 @@ using Api.Features.Common.Services.UrlHelper;
 using Api.Infrastructure.DbContext;
 using Api.Infrastructure.Storage;
 using Azure.Storage.Blobs;
+using Deepseek.AspClient.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -40,6 +41,8 @@ builder.Services.AddControllers().AddJsonOptions(option =>
     option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 }
 );
+builder.Services.AddSingleton(provider =>
+                new DeepseekClient("sk-5c0412dca29e46c79bc242fd39b2711d"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>

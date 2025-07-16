@@ -46,6 +46,17 @@ namespace Api.Features.Orders.Queries.GetAllOrders
                Id = o.Id,
                CreatedAt = o.CreatedAt,
                Status = o.Status,
+               UserName = o.UserName,
+               UserLastName = o.UserLastName,
+               Address = o.Address,
+               OrderNumber=o.OrderNumber,
+               PhoneNumber = o.PhoneNumber,
+               Email = o.Email,
+              
+               Price = o.Price,
+               ShipPrice = o.ShipPrice,
+               TotalPrice = o.TotalPrice,
+               TotalPriceIncludeTax = o.TotalPriceIncludeTax,
                Items = o.OrderItems.Select(oi => new OrderItemDto
                {
                    Id = oi.Id,
@@ -53,7 +64,7 @@ namespace Api.Features.Orders.Queries.GetAllOrders
                    ProductTitle = oi.Product.Title,
                    ProductShortDesc = oi.Product.ShortDesc,
                    TotalProductsPrice = oi.TotalProductsPrice,
-                   ImageId = oi.Product.ImgId,
+                   ImageUrl =  oi.Product.ImageUrls.Count > 0 ? oi.Product.ImageUrls[0] : null,
                }).ToList()
            });
 
@@ -89,9 +100,22 @@ namespace Api.Features.Orders.Queries.GetAllOrders
         public class OrderDto
         {
             public Guid Id { get; set; }
+            
             public OrderStatus Status { get; set; }
             public DateTime CreatedAt { get; set; }
             public List<OrderItemDto> Items { get; set; }
+            required
+            public string OrderNumber { get; set; }
+            public string? UserName { get; set; }
+            public string? UserLastName { get; set; }
+            public string? Address { get; set; }
+            public string? PhoneNumber { get; set; }
+            public string? Email { get; set; }
+
+            public float Price { get; set; }
+            public float ShipPrice { get; set; }
+            public float TotalPrice { get; set; }
+            public float TotalPriceIncludeTax { get; set; }
         }
 
         public class OrderItemDto
@@ -100,7 +124,7 @@ namespace Api.Features.Orders.Queries.GetAllOrders
             public int Quantity { get; set; }
             public string ProductTitle { get; set; }
             public string ProductShortDesc { get; set; }
-            public Guid? ImageId { get; set; }
+            public string? ImageUrl { get; set; }
 
             public float TotalProductsPrice { get; set; }
         }

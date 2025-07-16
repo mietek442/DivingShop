@@ -4,10 +4,12 @@ namespace Api.Features.Products.Commands.CreateProduct
 {
     public class CreateProductRequest
     {
+        public List<IFormFile> Images { get; set; }
         [Required]
         public string Title { get; set; }
 
         [Required]
+
         public string ShortDesc { get; set; }
 
         public string Description { get; set; }
@@ -23,11 +25,7 @@ namespace Api.Features.Products.Commands.CreateProduct
         public float? Discount { get; set; }
 
         [Required]
-        public Guid ImgId { get; set; }
 
-        public Guid? ImgIdTwo { get; set; }
-        public Guid? ImgIdThree { get; set; }
-        public Guid? ImgIdFour { get; set; }
 
         public float? Size { get; set; }
     }

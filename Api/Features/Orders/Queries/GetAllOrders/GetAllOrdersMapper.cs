@@ -28,7 +28,7 @@ namespace Api.Features.Orders.Queries.GetAllOrders
         {
             return new OrderItemResult
             {
-                ProductImageUrl = CreatePictureUrl(orderItemDto.ImageId, _urlHelpers),
+                ProductImageUrl = orderItemDto.ImageUrl,
                 Quantity = orderItemDto.Quantity,
                 ProductName = orderItemDto.ProductTitle,
                TotalProductsPrice = orderItemDto.TotalProductsPrice,
@@ -39,23 +39,7 @@ namespace Api.Features.Orders.Queries.GetAllOrders
         }
 
       
-        private static string CreatePictureUrl(Guid? imgId, IUrlHelpers _urlHelpers)
-        {
-
-            if (_urlHelpers == null)
-                throw new InvalidOperationException("UrlHelper is not set.");
-
-
-
-            var url = _urlHelpers.CreatePictureUrl(imgId);
-            if (url == null)
-            {
-                return "Unable to generate the URL.";
-            }
-
-
-            return string.IsNullOrEmpty(url) ? "Unable to generate the URL." : url;
-        }
+       
 
     }
     class OrderItemFromDb

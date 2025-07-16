@@ -1,8 +1,10 @@
 ﻿using Api.Domain.Models;
 using Api.Features.Common.Services.Storage;
+using Api.Features.Common.Services.UrlHelper;
 using Api.Infrastructure.DbContext;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 
 namespace Api.Features.Products.Commands.CreateProduct
@@ -16,11 +18,11 @@ namespace Api.Features.Products.Commands.CreateProduct
     {
         private readonly IBlobService _blobService;
         private readonly IApplicationContext _context;
-
-        public CreateProductCommandHandler(IBlobService blobService, IApplicationContext context)
+        private readonly IUrlHelpers _urlHelpers;
+        public CreateProductCommandHandler(IBlobService blobService, IApplicationContext context, IUrlHelpers urlHelpers)
         {
             _blobService = blobService;
-
+            _urlHelpers = urlHelpers;
             _context = context;
         }
 
@@ -37,15 +39,39 @@ namespace Api.Features.Products.Commands.CreateProduct
                 Available =request.ProductRequest.Available,
                 BasePrice = request.ProductRequest.BasePrice,
                 Discount = request.ProductRequest.Discount,
-                ImgId = request.ProductRequest.ImgId,
-                ImgIdTwo = request.ProductRequest.ImgIdTwo,
-                ImgIdThree = request.ProductRequest.ImgIdThree,
-                ImgIdFour = request.ProductRequest.ImgIdFour,
+               
                 Size = request.ProductRequest.Size,
             };
+            foreach (var image in request.ProductRequest.Images)
+            {
+                using var stream = image.OpenReadStream();
+
+                var imageId = await _blobService.UploadAsync(stream, image.ContentType);
+                var imageUrlApp = CreatePictureUrl(imageId, _urlHelpers);
+                product.ImageUrls.Add(imageUrlApp.ToString());
+            }
+           
             _context.Products.Add(product);
             var res = await _context.SaveChangesAsync(cancellationToken);
             return new OkObjectResult(product);
         }
+        private static string CreatePictureUrl(Guid? imgId, IUrlHelpers urlHelpers)
+        {
+
+            if (urlHelpers == null)
+                throw new InvalidOperationException("UrlHelper is not set.");
+
+
+
+            var url = urlHelpers.CreatePictureUrl(imgId);
+            if (url == null)
+            {
+                return "Unable to generate the URL.";
+            }
+
+
+            return string.IsNullOrEmpty(url) ? "Unable to generate the URL." : url;
+        }
     }
+
 }

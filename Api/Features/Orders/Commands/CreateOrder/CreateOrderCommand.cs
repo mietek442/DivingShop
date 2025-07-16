@@ -1,9 +1,11 @@
 ﻿using Api.Domain.Models;
 using Api.Infrastructure.DbContext;
 using Api.Shared.Enums;
+using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Api.Features.Orders.Commands.CreateOrder
 {
@@ -30,10 +32,11 @@ namespace Api.Features.Orders.Commands.CreateOrder
             using var transaction = await _context.BeginTransactionAsync(cancellationToken);
             try
             {
-                var order = CreateNewOrder(loggedInUserId);
-                await _context.Orders.AddAsync(order, cancellationToken);
+                var order = CreateNewOrder(loggedInUserId,request.OrderRequest); // tworzymy Order z podstawowymi ifnormacjami
 
-                var productIds = request.OrderRequest.OrderItems.Select(i => i.ProductId).Distinct();
+                await _context.Orders.AddAsync(order, cancellationToken); // dodajemy do baz(ale możemy zawsze to cofnąć przez rolback-który jest nizej jak sie cos nie uda)
+
+                var productIds = request.OrderRequest.OrderItems.Select(i => i.ProductId).Distinct(); // lista id produktów które dodaliśmy
                 var products = await _context.Products
                     .Where(p => productIds.Contains(p.Id))
                     .ToDictionaryAsync(p => p.Id, cancellationToken);
@@ -42,12 +45,19 @@ namespace Api.Features.Orders.Commands.CreateOrder
                     .Select(itemRequest => CreateOrderItem(itemRequest, order.Id, products[itemRequest.ProductId]))
                     .ToList();
 
+
+                CalculateFinalOrderPrice(order, orderItems); // w zamówieniu edycja cenn 
+
+
+
+
                 await _context.OrderItems.AddRangeAsync(orderItems, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
 
                 await transaction.CommitAsync(cancellationToken);
 
                 var mappedOrders = order.ToCreateOrderResult(orderItems);
+
                 return new OkObjectResult(mappedOrders);
             }
             catch
@@ -57,17 +67,25 @@ namespace Api.Features.Orders.Commands.CreateOrder
             }
         }
 
-        private Order CreateNewOrder(Guid userId)
+        private Order CreateNewOrder(Guid userId, CreateOrderRequest request)
         {
             return new Order
             {
                 UserId = userId,
+                UserName = request.UserName,
+                UserLastName = request.UserLastName,
+                OrderNumber = Guid.NewGuid().ToString()[..8], 
+                Address = request.Address,
+                PhoneNumber=request.PhoneNumber,
+                Email=request.Email,
+                OrderDate = DateTime.UtcNow.AddDays(2),
+
                 Status = OrderStatus.Pending,
                 CreatedAt = DateTime.UtcNow
             };
         }
 
-        private OrderItem CreateOrderItem(OrderItemRequest itemRequest, Guid orderId,Product product)
+        private OrderItem CreateOrderItem(OrderItemRequest itemRequest, Guid orderId, Product product)
         {
             return new OrderItem
             {
@@ -75,16 +93,34 @@ namespace Api.Features.Orders.Commands.CreateOrder
                 ProductId = itemRequest.ProductId,
                 ProductName = product.Title,
                 Quantity = itemRequest.Quantity,
-                TotalProductsPrice = itemRequest.Quantity* CalculateFinalPrice(product),
+                TotalProductsPrice = itemRequest.Quantity * CalculateFinalPrice(product),
             };
         }
-     
+
         private static float CalculateFinalPrice(Product product)
         {
             return product.BasePrice * (1 - (product.Discount ?? 0));
+        }
+        private void CalculateFinalOrderPrice(Order order, List<OrderItem> orderItems)
+        {
+            
+
+            var itemsPrice = orderItems.Sum(i => i.TotalProductsPrice);
+            order.Price = itemsPrice;
+            
+            order.ShipPrice = order.DeliveryMethod switch
+            {
+                DeliveryMethodEnum.Standard => 13.99f,
+                DeliveryMethodEnum.Express => 19.99f,
+                DeliveryMethodEnum.PickupPoint => 11.99f,
+                DeliveryMethodEnum.Courier => 15.99f,
+                _ => 10f
+            };
+
+            order.TotalPrice = itemsPrice + order.ShipPrice;
+            order.TotalPriceIncludeTax = order.TotalPrice * 1.24f; 
         }
 
     }
 
 }
-

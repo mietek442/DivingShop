@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Ardalis.ApiEndpoints" Version="4.1.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
+    <PackageReference Include="Deepseek.AspClient" Version="1.0.0" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
@@ -36,6 +37,7 @@
 
   <ItemGroup>
     <Folder Include="Features\Common\Services\NewFolder\" />
+    <Folder Include="Infrastructure\Persistence\" />
   </ItemGroup>
 
 </Project>

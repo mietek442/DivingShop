@@ -5,7 +5,7 @@ namespace Api.Features.Products.Queries.GetAllProducts
     public class ProductResult
     {
      
-
+        public Guid Id { get; set; }
         public required string Title { get; set; }
         public string ShortDesc { get; set; }
         public string? Description { get; set; }
@@ -14,7 +14,7 @@ namespace Api.Features.Products.Queries.GetAllProducts
         public float? BasePrice { get; set; }
         public float? Discount { get; set; }
         public float FinalPrice { get; set; }
-        public string ImgUrl { get; set; }
+        public string? ImgUrl { get; set; }
         
         public float? Size { get; set; }
        

@@ -11,6 +11,7 @@ namespace Api.Features.Products.Queries.GetAllProducts
 
             return new ProductResult
             {
+                Id = product.Id,
                 Title = product.Title,
                 ShortDesc = product.ShortDesc,
                 Description = product.Description,
@@ -19,7 +20,8 @@ namespace Api.Features.Products.Queries.GetAllProducts
                 BasePrice = (product.Discount > 0) ? product.BasePrice : null,
                 Discount = (product.Discount > 0) ? product.Discount : null,
                 FinalPrice = CalculateFinalPrice(product),
-                ImgUrl = CreatePictureUrl(product.ImgId, _urlHelpers),
+                ImgUrl = product.ImageUrls.Count > 0 ? product.ImageUrls[0] : null
+
             };
 
         }
@@ -36,23 +38,7 @@ namespace Api.Features.Products.Queries.GetAllProducts
 
             return product.BasePrice;
         }
-        private static string CreatePictureUrl(Guid? imgId, IUrlHelpers _urlHelpers)
-        {
-
-            if (_urlHelpers == null)
-                throw new InvalidOperationException("UrlHelper is not set.");
-
-
-
-            var url = _urlHelpers.CreatePictureUrl(imgId);
-            if (url == null)
-            {
-                return "Unable to generate the URL.";
-            }
-
-
-            return string.IsNullOrEmpty(url) ? "Unable to generate the URL." : url;
-        }
+       
 
     }
 }
