@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Api.Migrations
+namespace Api.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
     partial class ApplicationContextModelSnapshot : ModelSnapshot
@@ -78,6 +78,9 @@ namespace Api.Migrations
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("isIsDeleted")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

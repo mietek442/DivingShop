@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Api.Migrations
+namespace Api.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -72,7 +72,8 @@ namespace Api.Migrations
                     ShipPrice = table.Column<float>(type: "real", nullable: false),
                     TotalPrice = table.Column<float>(type: "real", nullable: false),
                     TotalPriceIncludeTax = table.Column<float>(type: "real", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false)
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    isIsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

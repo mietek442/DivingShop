@@ -16,6 +16,7 @@ namespace Api.Features.Orders.Commands.CreateOrder
                 Email=order.Email,
                 PhoneNumber=order.PhoneNumber,
                 OrderItems = orderItems,
+                DeliveryMethod = order.DeliveryMethod,
                 Status = order.Status.ToString(),
                 Price = order.Price,
                 ShipPrice=order.ShipPrice,

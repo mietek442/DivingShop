@@ -78,7 +78,8 @@ namespace Api.Features.Orders.Commands.CreateOrder
                 Address = request.Address,
                 PhoneNumber=request.PhoneNumber,
                 Email=request.Email,
-                OrderDate = DateTime.UtcNow.AddDays(2),
+                OrderDate = AddBusinessDays(DateTime.UtcNow, 2),// czas dostawy ustawiony na 2 dni robocze
+                DeliveryMethod =request.DeliveryMethod,
 
                 Status = OrderStatus.Pending,
                 CreatedAt = DateTime.UtcNow
@@ -106,8 +107,8 @@ namespace Api.Features.Orders.Commands.CreateOrder
             
 
             var itemsPrice = orderItems.Sum(i => i.TotalProductsPrice);
-            order.Price = itemsPrice;
-            
+            order.Price = (float)Math.Round(itemsPrice, 2);
+
             order.ShipPrice = order.DeliveryMethod switch
             {
                 DeliveryMethodEnum.Standard => 13.99f,
@@ -117,9 +118,25 @@ namespace Api.Features.Orders.Commands.CreateOrder
                 _ => 10f
             };
 
-            order.TotalPrice = itemsPrice + order.ShipPrice;
-            order.TotalPriceIncludeTax = order.TotalPrice * 1.24f; 
+            order.ShipPrice = (float)Math.Round(order.ShipPrice, 2);
+
+            order.TotalPrice = (float)Math.Round(order.Price + order.ShipPrice, 2);
+            order.TotalPriceIncludeTax = (float)Math.Round(order.TotalPrice * 1.24f, 2);
         }
+        public static DateTime AddBusinessDays(DateTime startDate, int businessDays)
+        {
+            var currentDate = startDate;
+            while (businessDays > 0)
+            {
+                currentDate = currentDate.AddDays(1);
+                if (currentDate.DayOfWeek != DayOfWeek.Saturday && currentDate.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    businessDays--;
+                }
+            }
+            return currentDate;
+        }
+
 
     }
 

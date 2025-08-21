@@ -9,6 +9,7 @@
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>api</DockerServiceName>
   </PropertyGroup>
+
   <ItemGroup>
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
@@ -16,4 +17,11 @@
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
   </ItemGroup>
+
+
+<ItemGroup>
+  <None Include="Api\Features\Orders\Commands\GenereteOrderInvoice\Views\SimpleTemplate.hbs">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </None>
+</ItemGroup>
 </Project>

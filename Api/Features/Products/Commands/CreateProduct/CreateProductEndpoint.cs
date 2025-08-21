@@ -24,7 +24,7 @@ namespace Api.Features.Products.Commands.CreateProduct
             OperationId = "Products_Create",
             Tags = new[] { "Products" })
         ]
-        public override async Task<ActionResult<Product>> HandleAsync(CreateProductRequest request, CancellationToken cancellationToken = default)
+        public override async Task<ActionResult<Product>> HandleAsync([FromForm] CreateProductRequest request, CancellationToken cancellationToken = default)
         {
             return await _mediator.Send(new CreateProductCommand { ProductRequest = request });
         }

@@ -13,6 +13,7 @@ namespace Api.Features.Orders.Queries.GetAllOrders
         public string? Address { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
+        public DeliveryMethodEnum DeliveryMethod { get; set; }
 
         public OrderStatus Status { get; set; }
 

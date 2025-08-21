@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Api.Features.Products.Commands.CreateProduct
 {
@@ -6,6 +7,7 @@ namespace Api.Features.Products.Commands.CreateProduct
     {
         public List<IFormFile> Images { get; set; }
         [Required]
+        
         public string Title { get; set; }
 
         [Required]

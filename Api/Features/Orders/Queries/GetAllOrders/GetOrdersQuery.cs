@@ -41,6 +41,7 @@ namespace Api.Features.Orders.Queries.GetAllOrders
 
             IQueryable<OrderDto> ordersQuery = _context.Orders
            .OrderBy(o => o.CreatedAt)
+           .Where(o => o.isIsDeleted == !true)
            .Select(o => new OrderDto
            {
                Id = o.Id,
@@ -49,10 +50,10 @@ namespace Api.Features.Orders.Queries.GetAllOrders
                UserName = o.UserName,
                UserLastName = o.UserLastName,
                Address = o.Address,
-               OrderNumber=o.OrderNumber,
+               OrderNumber = o.OrderNumber,
                PhoneNumber = o.PhoneNumber,
                Email = o.Email,
-              
+               DeliveryMethod = o.DeliveryMethod,
                Price = o.Price,
                ShipPrice = o.ShipPrice,
                TotalPrice = o.TotalPrice,
@@ -64,7 +65,7 @@ namespace Api.Features.Orders.Queries.GetAllOrders
                    ProductTitle = oi.Product.Title,
                    ProductShortDesc = oi.Product.ShortDesc,
                    TotalProductsPrice = oi.TotalProductsPrice,
-                   ImageUrl =  oi.Product.ImageUrls.Count > 0 ? oi.Product.ImageUrls[0] : null,
+                   ImageUrl = oi.Product.ImageUrls.Count > 0 ? oi.Product.ImageUrls[0] : null,
                }).ToList()
            });
 
@@ -100,12 +101,14 @@ namespace Api.Features.Orders.Queries.GetAllOrders
         public class OrderDto
         {
             public Guid Id { get; set; }
-            
+
             public OrderStatus Status { get; set; }
             public DateTime CreatedAt { get; set; }
             public List<OrderItemDto> Items { get; set; }
+            public DeliveryMethodEnum DeliveryMethod { get; set; }
             required
-            public string OrderNumber { get; set; }
+            public string OrderNumber
+            { get; set; }
             public string? UserName { get; set; }
             public string? UserLastName { get; set; }
             public string? Address { get; set; }

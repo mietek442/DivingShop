@@ -1,4 +1,5 @@
 ﻿using Api.Domain.Models;
+using Api.Shared.Enums;
 
 namespace Api.Features.Orders.Commands.CreateOrder
 {
@@ -14,6 +15,7 @@ namespace Api.Features.Orders.Commands.CreateOrder
 
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public string Status { get; set; }
+        public DeliveryMethodEnum DeliveryMethod { get; set; }
         public float Price { get; set; }
         public float ShipPrice { get; set; }
         public float TotalPrice { get; set; }

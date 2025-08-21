@@ -10,10 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Api.Migrations
+namespace Api.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20250715072121_Init")]
+    [Migration("20250719082453_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -81,6 +81,9 @@ namespace Api.Migrations
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("isIsDeleted")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

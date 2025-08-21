@@ -34,6 +34,7 @@ namespace Api.Domain.Models
         public OrderStatus Status { get; set; }
         public List<OrderStatusHistory> StatusHistory { get; set; } = new List<OrderStatusHistory>();
 
+        public bool isIsDeleted { get; set; }
         public void ChangeStatus(OrderStatus newStatus)
         {
             if (Status != newStatus)
