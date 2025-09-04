@@ -39,6 +39,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="7.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="ZXing.Net" Version="0.16.10" />
   </ItemGroup>
 
   <ItemGroup>
